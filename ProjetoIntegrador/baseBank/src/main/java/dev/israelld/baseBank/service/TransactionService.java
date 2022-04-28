@@ -21,6 +21,8 @@ public class TransactionService {
     private AccountSpecialService accountSpecialService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private HistoricService historicService;
 
     public String deposit(Long id,Account obj) {
         Account account = accountService.findById(id);
@@ -29,12 +31,13 @@ public class TransactionService {
             AccountSpecial newAccountSpecial = accountSpecialService.findById(id);
             newAccountSpecial.setBalance(obj.getBalance() + newAccountSpecial.getBalance());
             accountSpecialService.update(id, newAccountSpecial);
+            historicService.instantiateDepositToAccountSpecial(obj.getBalance(), newAccountSpecial);
             return String.format("Saldo atual: %.2f\nLimite especial atual: %.2f", newAccountSpecial.getBalance(), newAccountSpecial.getLimitValue());
         } else if (typeAccount.equals("C")) {
-
             AccountCurrent newAccountCurrent = accountCurrentService.findById(id);
             newAccountCurrent.setBalance(obj.getBalance() + newAccountCurrent.getBalance());
             accountCurrentService.update(id, newAccountCurrent);
+            historicService.instantiateDepositToAccountCurrent(obj.getBalance(), newAccountCurrent);
             return String.format("Saldo atual: %.2f", newAccountCurrent.getBalance());
         } else {
             return "Ocorreu um erro!\n Tente novamente mais tarde.";
@@ -50,6 +53,7 @@ public class TransactionService {
                     newAccountSpecial.setLimitValue((newAccountSpecial.getBalance() + newAccountSpecial.getLimitValue()) - obj.getBalance());
                     newAccountSpecial.setBalance(0);
                     accountSpecialService.update(id, newAccountSpecial);
+                    historicService.instantiateWithdrawToAccountSpecial(obj.getBalance(), newAccountSpecial);
                     return String.format("Saldo atual: %.2f\nLimite especial atual: %.2f", newAccountSpecial.getBalance(), newAccountSpecial.getLimitValue());
                 }
                 else {
@@ -58,6 +62,7 @@ public class TransactionService {
             } else {
                 newAccountSpecial.setBalance(newAccountSpecial.getBalance() - obj.getBalance());
                 accountSpecialService.update(id, newAccountSpecial);
+                historicService.instantiateWithdrawToAccountSpecial(obj.getBalance(), newAccountSpecial);
                 return String.format("Saldo atual: %.2f\nLimite especial atual: %.2f", newAccountSpecial.getBalance(), newAccountSpecial.getLimitValue());
             }
         } else if (account.getTipo().equals("C")) {
@@ -69,6 +74,7 @@ public class TransactionService {
             else {
                 newAccountCurrent.setBalance(newAccountCurrent.getBalance() - obj.getBalance());
                 accountCurrentService.update(id, newAccountCurrent);
+                historicService.instantiateWithdrawToAccountCurrent(obj.getBalance(), newAccountCurrent);
                 return String.format("Saldo atual: %.2f", newAccountCurrent.getBalance());
             }
         } else {
@@ -85,29 +91,28 @@ public class TransactionService {
                 return String.format("Saldo insuficiente!\nSaldo atual: %.2f", accountOrigin.getBalance());
             }else {
                 if (accountDestination.getTipo().equals("C")) {
-                    System.err.println("Des C");
                     AccountCurrent newAccountCurrent = accountCurrentService.findById(accountDestination.getId());
-                    newAccountCurrent.setBalance(form.getValueToTransfer() + accountDestination.getBalance());
-                    accountCurrentService.update(id, newAccountCurrent);
-                }
-                else if (accountDestination.getTipo().equals("S")) {
-                    System.err.println("Des S 1");
-                    System.err.format("%d", accountDestination.getId());
+                    newAccountCurrent.setBalance(form.getValueToTransfer() + newAccountCurrent.getBalance());
+                    accountCurrentService.update(newAccountCurrent.getId(), newAccountCurrent);
+                    historicService.instantiateTransferFromAccountCurrent(form.getValueToTransfer(), newAccountCurrent.getId(), newAccountCurrent);
+                }else if (accountDestination.getTipo().equals("S")) {
                     AccountSpecial newAccountSpecial = accountSpecialService.findById(accountDestination.getId());
-                    newAccountSpecial.setBalance(form.getValueToTransfer() + accountDestination.getBalance());
-                    accountSpecialService.update(id, newAccountSpecial);
+                    newAccountSpecial.setBalance(form.getValueToTransfer() + newAccountSpecial.getBalance());
+                    accountSpecialService.update(newAccountSpecial.getId(), newAccountSpecial);
+                    historicService.instantiateTransferFromAccountSpecial(form.getValueToTransfer(), newAccountSpecial.getId(), newAccountSpecial);
                 }
                 if (accountOrigin.getTipo().equals("C")) {
-                    System.err.println("Erro Or C");
                     AccountCurrent newAccountCurrent = accountCurrentService.findById(accountOrigin.getId());
+                    newAccountCurrent.setBalance(form.getValueToTransfer() + newAccountCurrent.getBalance());
                     newAccountCurrent.setBalance(accountOrigin.getBalance() - form.getValueToTransfer());
-                    accountCurrentService.update(id, newAccountCurrent);
-                }
-                else if (accountOrigin.getTipo().equals("S")) {
-                    System.err.println("Erro Or S");
+                    accountCurrentService.update(newAccountCurrent.getId(), newAccountCurrent);
+                    historicService.instantiateTransferToAccountCurrent(form.getValueToTransfer(), newAccountCurrent.getId(), newAccountCurrent);
+                }else if (accountOrigin.getTipo().equals("S")) {
+                    System.err.println("Or S");
                     AccountSpecial newAccountSpecial = accountSpecialService.findById(accountOrigin.getId());
                     newAccountSpecial.setBalance(accountOrigin.getBalance() - form.getValueToTransfer());
-                    accountSpecialService.update(id, newAccountSpecial);
+                    accountSpecialService.update(newAccountSpecial.getId(), newAccountSpecial);
+                    historicService.instantiateTransferToAccountSpecial(form.getValueToTransfer(), newAccountSpecial.getId(), newAccountSpecial);
                 }
                 return String.format("Transferência realizada com sucesso!\n Saldo atual: %.2f", accountOrigin.getBalance());
             }

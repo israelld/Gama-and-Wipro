@@ -3,7 +3,7 @@ package dev.israelld.baseBank.service;
 import java.util.List;
 import java.util.Optional;
 
-import dev.israelld.baseBank.model.Historic;
+import dev.israelld.baseBank.model.*;
 import dev.israelld.baseBank.repository.HistoricRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,33 +12,42 @@ import org.springframework.stereotype.Service;
 public class HistoricService {
 
 	@Autowired
-	private HistoricRepository repository;
-	
+	private HistoricRepository historicRepository;
+
 	public Historic findById(Long id) {
-        Optional<Historic> obj = repository.findById(id);
+        Optional<Historic> obj = historicRepository.findById(id);
         return obj.orElse(null);
     }
-	
 	public List<Historic> findAll() {
-        return repository.findAll();
+        return historicRepository.findAll();
     }
-	
-	public Historic update(Long id, Historic obj) {
-		Historic newObj = findById(id);
-		newObj.setId(id);
-        newObj.setAccount(obj.getAccount());
-        newObj.setAccountNumberDestiny(obj.getAccountNumberDestiny());
-        newObj.setAccountNumberOrigin(obj.getAccountNumberOrigin());  
-        newObj.setHistoric_data(obj.getHistoric_data()); 
-        newObj.setHistoricType(obj.getHistoricType()); 
-        return repository.save(newObj);
-    }
-	
+
 	public Historic create(Historic obj) {
-        return repository.save(obj);
+        return historicRepository.save(obj);
     }
-    public void delete(Long id) {
-        findById(id);
-        repository.deleteById(id);
+    public void instantiateWithdrawToAccountSpecial(double movedValue, AccountSpecial account){
+        create(new Historic(HistoricType.SAQUE,movedValue, account));
     }
+    public void instantiateWithdrawToAccountCurrent(double movedValue, AccountCurrent account){
+        create(new Historic(HistoricType.SAQUE,movedValue, account));
+    }
+    public void instantiateDepositToAccountSpecial(double movedValue, AccountSpecial account){
+        create(new Historic(HistoricType.DEPÓSITO,movedValue, account));
+    }
+    public void instantiateDepositToAccountCurrent(double movedValue, AccountCurrent account){
+        create(new Historic(HistoricType.DEPÓSITO,movedValue, account));
+    }
+    public void instantiateTransferFromAccountSpecial(double movedValue, Long accountNumberDestiny, AccountSpecial account){
+        create(new Historic(accountNumberDestiny, HistoricType.TRANSFERÊNCIA_ENVIADA,movedValue, account));
+    }
+    public void instantiateTransferFromAccountCurrent(double movedValue, Long accountNumberDestiny, AccountCurrent account){
+        create(new Historic(accountNumberDestiny, HistoricType.TRANSFERÊNCIA_ENVIADA,movedValue, account));
+    }
+    public void instantiateTransferToAccountSpecial(double movedValue, Long accountNumberOrigin, AccountSpecial account){
+        create(new Historic(HistoricType.TRANSFERÊNCIA_RECEBIDA,movedValue, account, accountNumberOrigin));
+    }
+    public void instantiateTransferToAccountCurrent(double movedValue, Long accountNumberOrigin, AccountCurrent account){
+        create(new Historic(HistoricType.TRANSFERÊNCIA_RECEBIDA,movedValue, account, accountNumberOrigin));
+    }
+
 }

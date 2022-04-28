@@ -19,8 +19,32 @@ public class Historic {
 	private Long accountNumberDestiny;
 	private LocalDateTime historic_data = LocalDateTime.now();
 	private HistoricType historicType;
+	private double movedValue;
 	@ManyToOne
 	private Account account;
+
+	public Historic() {
+	}
+
+	public Historic(HistoricType historicType, double movedValue, Account account) {
+		this.historicType = historicType;
+		this.movedValue = movedValue;
+		this.account = account;
+	}
+
+	public Historic(HistoricType historicType, double movedValue, Account account, Long accountNumberOrigin) {
+		this.accountNumberOrigin = accountNumberOrigin;
+		this.historicType = historicType;
+		this.movedValue = movedValue;
+		this.account = account;
+	}
+
+	public Historic(Long accountNumberDestiny, HistoricType historicType, double movedValue, Account account) {
+		this.accountNumberDestiny = accountNumberDestiny;
+		this.historicType = historicType;
+		this.movedValue = movedValue;
+		this.account = account;
+	}
 
 	public Long getId() {
 		return id;
@@ -51,6 +75,12 @@ public class Historic {
 	}
 	public void setHistoricType(HistoricType historicType) {
 		this.historicType = historicType;
+	}
+	public double getMovedValue() {
+		return movedValue;
+	}
+	public void setMovedValue(double movedValue) {
+		this.movedValue = movedValue;
 	}
 	public Account getAccount() {
 		return account;

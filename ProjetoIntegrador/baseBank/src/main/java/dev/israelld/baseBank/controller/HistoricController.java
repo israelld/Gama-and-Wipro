@@ -2,7 +2,10 @@ package dev.israelld.baseBank.controller;
 
 import java.util.List;
 
+import dev.israelld.baseBank.model.Account;
 import dev.israelld.baseBank.model.Historic;
+import dev.israelld.baseBank.repository.HistoricRepository;
+import dev.israelld.baseBank.service.AccountService;
 import dev.israelld.baseBank.service.HistoricService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,29 +27,21 @@ public class HistoricController {
 
 	@Autowired
     private HistoricService service;
-	
+    @Autowired
+    private HistoricRepository repository;
+    @Autowired
+    private AccountService accountService;
+
 	@GetMapping("/{id}")
-    public ResponseEntity<Historic> GetById(@PathVariable Long id) {
-		Historic obj = this.service.findById(id);
+    public ResponseEntity<List<Historic>> GetById(@PathVariable Long id) {
+        Account account = accountService.findById(id);
+        List<Historic> obj = this.repository.findByAccount(account);
         return ResponseEntity.ok().body(obj);
     }
+
     @GetMapping
     public ResponseEntity<List<Historic>> GetAll() {
         List<Historic> list = service.findAll();
         return ResponseEntity.ok().body(list);
-    }
-    @PostMapping
-    public ResponseEntity<Historic> Post(@RequestBody Historic historic) {
-        return ResponseEntity.status(HttpStatus.GONE).body(service.create(historic));
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<Historic> Put(@PathVariable Long id, @RequestBody Historic obj) {
-    	Historic newHistoric = service.update(id, obj);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(newHistoric);
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> Delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

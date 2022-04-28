@@ -34,7 +34,19 @@ public class Account{
 	@ManyToOne
 	private Agency agency;
 
-	
+	@Override
+	public String toString() {
+		return "Account{" +
+				"id=" + id +
+				", number='" + number + '\'' +
+				", balance=" + balance +
+				", status=" + status +
+				", tipo='" + tipo + '\'' +
+				", client=" + client +
+				", agency=" + agency +
+				'}';
+	}
+
 	public Long getId() {
 		return id;
 	}

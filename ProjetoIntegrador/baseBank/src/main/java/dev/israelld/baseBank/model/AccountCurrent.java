@@ -7,4 +7,8 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "C")
 public class AccountCurrent extends Account{
 
+    @Override
+    public String toString() {
+        return "AccountCurrent{} " + super.toString();
+    }
 }

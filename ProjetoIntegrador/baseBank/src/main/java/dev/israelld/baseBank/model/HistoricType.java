@@ -5,6 +5,6 @@ public enum HistoricType {
 	TRANSFERÊNCIA_ENVIADA,
 	TRANSFERÊNCIA_RECEBIDA,
 	SAQUE,
-	DEPOSITO;
+	DEPÓSITO;
 
 }

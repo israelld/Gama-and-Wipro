@@ -3,7 +3,7 @@ package dev.israelld.baseBank.controller.form;
 public class TransferForm {
 
     private Long accountDestination;
-    private double valueToTransfer;
+    private Double valueToTransfer;
 
     public Long getAccountDestination() {
         return accountDestination;

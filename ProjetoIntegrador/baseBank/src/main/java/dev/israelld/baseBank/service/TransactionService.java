@@ -87,7 +87,7 @@ public class TransactionService {
         Account accountDestination = accountService.findById(form.getAccountDestination());
         Account accountOrigin = accountService.findById(id);
 
-            if (accountOrigin.getBalance() - form.getValueToTransfer() < 0) {
+            if (accountOrigin.getBalance() - form.getValueToTransfer() < 0 || accountOrigin.getBalance() == 0) {
                 return String.format("Saldo insuficiente!\nSaldo atual: %.2f", accountOrigin.getBalance());
             }else {
                 if (accountDestination.getTipo().equals("C")) {
@@ -103,7 +103,6 @@ public class TransactionService {
                 }
                 if (accountOrigin.getTipo().equals("C")) {
                     AccountCurrent newAccountCurrent = accountCurrentService.findById(accountOrigin.getId());
-                    newAccountCurrent.setBalance(form.getValueToTransfer() + newAccountCurrent.getBalance());
                     newAccountCurrent.setBalance(accountOrigin.getBalance() - form.getValueToTransfer());
                     accountCurrentService.update(newAccountCurrent.getId(), newAccountCurrent);
                     historicService.instantiateTransferToAccountCurrent(form.getValueToTransfer(), newAccountCurrent.getId(), newAccountCurrent);

@@ -12,12 +12,12 @@ Repositório dedicado às atividades desenvolvidas durante o Wipro Bootcamp mini
 
 As atividades são focadas no desenvolvimento back-end em Java.
 
-[Atividade de Lógica]([www.t.com](https://github.com/israelld/Gama-and-Wipro/tree/main/Logica))
+[Lógica](https://github.com/israelld/Gama-and-Wipro/tree/main/Logica)
 
-[Atividade de Estruturas de Repetição e Condicionais](https://github.com/israelld/Gama-and-Wipro/tree/main/Estrutura-de-Repeticao)
+[Estruturas de Repetição e Condicionais](https://github.com/israelld/Gama-and-Wipro/tree/main/Estrutura-de-Repeticao)
 
 [Desafio: Carrinho de Compras](https://github.com/israelld/Gama-and-Wipro/tree/main/Desafio-Carrinho-de-Compras)
 
-[Atividade de POO](https://github.com/israelld/Gama-and-Wipro/tree/main/POO)
+[Exemplos de POO](https://github.com/israelld/Gama-and-Wipro/tree/main/POO)
 
-[Projeto Integrador]()
+[Sistema Bancário](https://github.com/israelld/Gama-and-Wipro/tree/main/ProjetoIntegrador)
